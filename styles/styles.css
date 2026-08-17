@@ -1,0 +1,46 @@
+:root {
+
+    --primary-color: #0B1420;
+    --secondary-color: #A50113;
+    --light-color: #DFE2DB;
+    --success-color: #28A745;
+    --error-color: #DE3545;
+    --global-font: 'Work Sans', sans-serif;
+
+}
+
+
+/* default */
+
+html,body{
+    scroll-behavior: smooth;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--global-font);
+}
+
+li {
+    list-style-type: none;
+}
+
+
+a {
+    text-decoration: none;
+    color: var(--secondary-color);
+}
+
+
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--success-color);
+    padding: 2px;
+    margin: 5px 5px;
+}

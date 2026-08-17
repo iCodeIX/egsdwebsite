@@ -1,0 +1,2491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Engineering and General Services Files</title>
+
+    <!-- Google Roboto Font & Material Symbols (Icons) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        :root {
+            --md-sys-color-primary: #0d47a1;
+            --md-sys-color-on-primary: #ffffff;
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --hover-bg: #f8fafc;
+            --input-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --accent-purple-bg: #f5f3ff;
+            --accent-blue-bg: #f0f9ff;
+            --accent-pink-bg: #fdf2f8;
+            --accent-purple-text: #5b21b6;
+            --accent-blue-text: #0369a1;
+            --accent-pink-text: #be185d;
+        }
+
+        html[data-theme="dark"] {
+            --md-sys-color-primary: #1e5fc4;
+            --md-sys-color-on-primary: #ffffff;
+            --bg-color: #10141b;
+            --card-bg: #1a202c;
+            --text-main: #e5e7eb;
+            --text-muted: #9aa5b1;
+            --border-color: #2d3748;
+            --hover-bg: #212836;
+            --input-bg: #232b3a;
+            --shadow-color: rgba(0, 0, 0, 0.35);
+            --accent-purple-bg: #241f3d;
+            --accent-blue-bg: #12283a;
+            --accent-pink-bg: #35192a;
+            --accent-purple-text: #b794f6;
+            --accent-blue-text: #67c9f5;
+            --accent-pink-text: #f472b6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            transition: background-color 0.25s ease;
+            color-scheme: light;
+        }
+
+        html[data-theme="dark"] {
+            color-scheme: dark;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            width: 100vw;
+            overflow-x: hidden;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* Top Navigation Bar - Full Width */
+        .navbar {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .navbar-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .navbar-title h1 {
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .clock-container {
+            text-align: right;
+        }
+
+        .clock-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+            text-transform: uppercase;
+        }
+
+        .clock-display {
+            font-size: 0.95rem;
+            font-weight: 500;
+            font-family: monospace;
+        }
+
+        .navbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+
+        .theme-toggle-btn .material-symbols-outlined {
+            font-size: 1.3rem;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            width: 100%;
+            padding: 1.5rem 2rem;
+        }
+
+        /* Summary Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px var(--shadow-color);
+            border-left: 4px solid var(--md-sys-color-primary);
+            transition: background-color 0.25s ease;
+        }
+
+        .stat-card.signed {
+            border-left-color: #2e7d32;
+        }
+
+        .stat-card.waiting {
+            border-left-color: #ed6c02;
+        }
+
+        .stat-card.meetings {
+            border-left-color: #0284c7;
+        }
+
+        .stat-card.bday {
+            border-left-color: #e91e63;
+        }
+
+        .stat-card .label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .stat-card .value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        /* Dashboard 3-Column Layout */
+        .dashboard-body-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 1.5rem;
+            align-items: start;
+            width: 100%;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-body-grid {
+                grid-template-columns: 300px 1fr;
+            }
+
+            .birthday-card {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .dashboard-body-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .birthday-card {
+                grid-column: span 1;
+            }
+
+            .dashboard-container {
+                padding: 1rem;
+            }
+        }
+
+        .sidebar-left,
+        .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Generic Widget Card */
+        .widget-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px var(--shadow-color);
+            overflow: hidden;
+            width: 100%;
+            transition: background-color 0.25s ease;
+        }
+
+        .widget-header {
+            padding: 1rem 1.25rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .widget-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .widget-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .widget-action-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Shout Out Panel */
+        .shoutout-header {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        }
+
+        .shoutout-list {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 280px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .shoutout-list.expanded {
+            max-height: 600px;
+        }
+
+        .shoutout-show-more {
+            display: block;
+            width: 100%;
+            padding: 0.6rem;
+            background: var(--hover-bg);
+            border: none;
+            border-top: 1px solid var(--border-color);
+            color: #7c3aed;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .shoutout-show-more:hover {
+            background: var(--accent-purple-bg);
+        }
+
+        .shoutout-item {
+            background: var(--accent-purple-bg);
+            border-left: 3px solid #7c3aed;
+            padding: 0.75rem 2rem 0.75rem 0.75rem;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .shoutout-author {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-purple-text);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .shoutout-text {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        /* Meetings Panel */
+        .meetings-header {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+        }
+
+        .meetings-list {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .meeting-item {
+            background: var(--accent-blue-bg);
+            border-left: 3px solid #0284c7;
+            padding: 0.75rem;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .meeting-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent-blue-text);
+            margin-bottom: 0.3rem;
+        }
+
+        .meeting-detail {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.2rem;
+        }
+
+        .item-delete-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .item-delete-btn:hover {
+            color: #ef4444;
+        }
+
+        /* Main Content Card */
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px var(--shadow-color);
+            overflow: hidden;
+            width: 100%;
+            transition: background-color 0.25s ease;
+        }
+
+        /* Birthday Panel */
+        .birthday-header {
+            background: linear-gradient(135deg, #880e4f, #ad1457);
+        }
+
+        .birthday-list {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .birthday-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--accent-pink-bg);
+            border-left: 3px solid #ec4899;
+            border-radius: 6px;
+            position: relative;
+            animation: bdayBlink 1s steps(1, end) infinite;
+        }
+
+        @keyframes bdayBlink {
+            0%, 49% {
+                opacity: 1;
+            }
+            50%, 100% {
+                opacity: 0.45;
+            }
+        }
+
+        .birthday-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fbcfe8;
+            color: #be185d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        html[data-theme="dark"] .birthday-avatar {
+            background: #5c2140;
+            color: #f9a8d4;
+        }
+
+        .birthday-info {
+            flex-grow: 1;
+        }
+
+        .birthday-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .birthday-position {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .birthday-date {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-pink-text);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        /* Tab Bar Container */
+        .tabs-header {
+            display: flex;
+            background-color: var(--card-bg);
+            border-bottom: 2px solid var(--border-color);
+            width: 100%;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease-in-out;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            background-color: var(--hover-bg);
+            color: var(--md-sys-color-primary);
+        }
+
+        .tab-button.active {
+            color: var(--md-sys-color-primary);
+            border-bottom-color: var(--md-sys-color-primary);
+            background-color: var(--hover-bg);
+        }
+
+        /* Action Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            margin-left: 0.5rem;
+            width: 100%;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .btn-primary {
+            background-color: var(--md-sys-color-primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #0a3880;
+        }
+
+        /* Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--hover-bg);
+            padding: 0.85rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem 0.75rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .col-id {
+            min-width: 130px;
+        }
+
+        .col-docno {
+            min-width: 160px;
+        }
+
+        .col-subject {
+            min-width: 280px;
+        }
+
+        .col-date {
+            min-width: 110px;
+        }
+
+        .col-status {
+            min-width: 140px;
+        }
+
+        .col-tracing {
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .col-action {
+            min-width: 60px;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        /* Status Chips */
+        .chip {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .chip-signed {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        html[data-theme="dark"] .chip-signed {
+            background: #1b3a20;
+            color: #86efac;
+        }
+
+        .chip-waiting {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        html[data-theme="dark"] .chip-waiting {
+            background: #3d2a10;
+            color: #fdba74;
+        }
+
+        .trace-btn {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: none;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: background 0.2s;
+        }
+
+        .trace-btn:hover {
+            background-color: #bae6fd;
+        }
+
+        html[data-theme="dark"] .trace-btn {
+            background-color: #0e2c42;
+            color: #7dd3fc;
+        }
+
+        html[data-theme="dark"] .trace-btn:hover {
+            background-color: #164562;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 4px;
+            border-radius: 50%;
+        }
+
+        .action-btn:hover {
+            color: var(--md-sys-color-primary);
+            background-color: var(--hover-bg);
+        }
+
+        /* MEETING REMINDER TOASTS */
+        .reminder-toast-container {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.25rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 340px;
+            max-width: calc(100vw - 2rem);
+        }
+
+        .reminder-toast {
+            background: var(--card-bg);
+            border-left: 4px solid #0369a1;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+            padding: 0.9rem 1rem;
+            position: relative;
+            animation: reminderSlideIn 0.3s ease-out, reminderPulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes reminderSlideIn {
+            from {
+                transform: translateX(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes reminderPulse {
+            0%, 100% {
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), 0 0 0 0 rgba(3, 105, 161, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), 0 0 0 6px rgba(3, 105, 161, 0);
+            }
+        }
+
+        .reminder-toast-header {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #0369a1;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 0.4rem;
+        }
+
+        .reminder-toast-header .material-symbols-outlined {
+            font-size: 1rem;
+        }
+
+        .reminder-toast-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.3rem;
+        }
+
+        .reminder-toast-detail {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.15rem;
+        }
+
+        .reminder-toast-detail .material-symbols-outlined {
+            font-size: 0.9rem;
+        }
+
+        .reminder-toast-close {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 50%;
+        }
+
+        .reminder-toast-close:hover {
+            color: #ef4444;
+            background: var(--hover-bg);
+        }
+
+        /* MODAL STYLING */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 650px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: modalSlide 0.25s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background-color: var(--md-sys-color-primary);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .doc-summary {
+            background: var(--hover-bg);
+            padding: 0.85rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-select {
+            padding: 0.35rem 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-weight: 600;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            margin-left: 10px;
+            border-left: 2px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -29px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #0d47a1;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #0d47a1;
+        }
+
+        .timeline-item.latest .timeline-dot {
+            background: #2e7d32;
+            box-shadow: 0 0 0 2px #2e7d32;
+        }
+
+        .timeline-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+        }
+
+        .timeline-division {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.2rem;
+        }
+
+        .timeline-status {
+            margin-top: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        /* CALENDAR VIEW */
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-nav-btn {
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .calendar-nav-btn:hover {
+            background: var(--accent-blue-bg);
+            color: #0369a1;
+        }
+
+        .calendar-month-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 0.4rem;
+        }
+
+        .calendar-weekdays span {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 1.25rem;
+        }
+
+        .calendar-day {
+            position: relative;
+            min-height: 74px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            padding: 3px 4px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            font-size: 0.8rem;
+            color: var(--text-main);
+            background: var(--hover-bg);
+            cursor: default;
+            transition: background 0.15s;
+            overflow: hidden;
+        }
+
+        .calendar-day-num {
+            font-size: 0.75rem;
+            font-weight: 600;
+            align-self: flex-start;
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            border: none;
+        }
+
+        .calendar-day.has-event {
+            cursor: pointer;
+            border-color: #0284c7;
+        }
+
+        .calendar-day.has-event:hover {
+            background: var(--accent-blue-bg);
+        }
+
+        .calendar-day.today {
+            box-shadow: 0 0 0 2px #0369a1 inset;
+        }
+
+        .calendar-day.selected {
+            background: #0369a1;
+        }
+
+        .calendar-day.selected .calendar-day-num,
+        .calendar-day.selected .calendar-event-agenda,
+        .calendar-day.selected .calendar-event-venue {
+            color: #ffffff;
+        }
+
+        .calendar-event-box {
+            margin-top: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+        }
+
+        .calendar-event-agenda {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #0369a1;
+            line-height: 1.15;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .calendar-event-venue {
+            font-size: 0.58rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            line-height: 1.15;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .calendar-event-venue .material-symbols-outlined {
+            font-size: 0.7rem;
+        }
+
+        .calendar-event-more {
+            font-size: 0.58rem;
+            font-weight: 600;
+            color: #0284c7;
+            margin-top: 1px;
+        }
+
+        .calendar-day.selected .calendar-event-more {
+            color: #e0f2fe;
+        }
+
+        .calendar-selected-meetings {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .calendar-selected-meetings h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .receive-box {
+            background: var(--accent-blue-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .field-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .field-group select,
+        .field-group input,
+        .field-group textarea {
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
+
+        .btn-success {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-success:hover {
+            background-color: #1b5e20;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: var(--hover-bg);
+            border-top: 1px solid var(--border-color);
+            text-align: right;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #334155;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Meeting Reminder Toasts -->
+    <div class="reminder-toast-container" id="reminderToastContainer"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+        <div class="navbar-title">
+            <span class="material-symbols-outlined">folder_shared</span>
+            <h1>Engineering and General Services Files</h1>
+        </div>
+
+        <div class="navbar-controls">
+            <!-- Live Philippine Clock -->
+            <div class="clock-container">
+                <div class="clock-label">Philippine Standard Time (PST)</div>
+                <div class="clock-display" id="phClock">Loading PST time...</div>
+            </div>
+
+            <!-- Dark / Light Mode Toggle -->
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Switch theme">
+                <span class="material-symbols-outlined" id="themeToggleIcon">dark_mode</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Full-Width Dashboard Container -->
+    <main class="dashboard-container">
+
+        <!-- Summary Stats Cards -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Total Managed Files</div>
+                <div class="value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card signed">
+                <div class="label">Signed Documents</div>
+                <div class="value" id="statSigned">0</div>
+            </div>
+            <div class="stat-card waiting">
+                <div class="label">Waiting for Approval</div>
+                <div class="value" id="statWaiting">0</div>
+            </div>
+            <div class="stat-card meetings">
+                <div class="label">Upcoming Meetings</div>
+                <div class="value" id="statMeetings">0</div>
+            </div>
+            <div class="stat-card bday">
+                <div class="label">Birthday Celebrants</div>
+                <div class="value" id="statBirthday">0</div>
+            </div>
+        </section>
+
+        <!-- Dashboard Three-Column Grid Body -->
+        <div class="dashboard-body-grid">
+
+            <!-- LEFT SIDEBAR: Shout Out & Upcoming Meetings -->
+            <aside class="sidebar-left">
+
+                <!-- SHOUT OUT PANEL -->
+                <div class="widget-card">
+                    <div class="widget-header shoutout-header">
+                        <div class="widget-title">
+                            <span class="material-symbols-outlined">campaign</span>
+                            <span>Shout Outs & Announcements</span>
+                        </div>
+                        <button class="widget-action-btn" onclick="openAddShoutoutModal()" title="Add Shout Out">
+                            <span class="material-symbols-outlined" style="font-size: 1.1rem;">add</span>
+                        </button>
+                    </div>
+                    <div class="shoutout-list" id="shoutoutList">
+                        <!-- Populated dynamically -->
+                    </div>
+                    <button class="shoutout-show-more" id="shoutoutShowMoreBtn" onclick="toggleShoutoutExpand()" style="display: none;">
+                        Show More
+                    </button>
+                </div>
+
+                <!-- UPCOMING MEETINGS PANEL -->
+                <div class="widget-card">
+                    <div class="widget-header meetings-header">
+                        <div class="widget-title">
+                            <span class="material-symbols-outlined">event</span>
+                            <span>Upcoming Meetings</span>
+                        </div>
+                        <div style="display: flex; gap: 0.4rem;">
+                            <button class="widget-action-btn" onclick="openCalendarModal()" title="Calendar View">
+                                <span class="material-symbols-outlined" style="font-size: 1.1rem;">calendar_month</span>
+                            </button>
+                            <button class="widget-action-btn" onclick="openAddMeetingModal()" title="Schedule Meeting">
+                                <span class="material-symbols-outlined" style="font-size: 1.1rem;">add</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="meetings-list" id="meetingsList">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- CENTER: Main File Database Content Card -->
+            <section class="content-card">
+
+                <!-- Interactive Switchable Tab Header -->
+                <div class="tabs-header">
+                    <button class="tab-button active" onclick="switchTab('TOR')">
+                        <span class="material-symbols-outlined">description</span>
+                        TOR
+                    </button>
+                    <button class="tab-button" onclick="switchTab('MEMO')">
+                        <span class="material-symbols-outlined">campaign</span>
+                        MEMO
+                    </button>
+                    <button class="tab-button" onclick="switchTab('OTHERS')">
+                        <span class="material-symbols-outlined">folder_open</span>
+                        OTHERS
+                    </button>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="toolbar">
+                    <div class="search-box">
+                        <span class="material-symbols-outlined" style="color: var(--text-muted);">search</span>
+                        <input type="text" id="searchInput" placeholder="Search Doc No. or Subject..."
+                            oninput="filterFiles()" />
+                    </div>
+
+                    <button class="btn-primary" onclick="openUploadModal()">
+                        <span class="material-symbols-outlined">upload_file</span>
+                        Upload File
+                    </button>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="col-docno">Document Number</th>
+                                <th class="col-subject">Subject</th>
+                                <th class="col-date">Date Added</th>
+                                <th class="col-status">Status</th>
+                                <th class="col-tracing">Division Tracing</th>
+                                <th class="col-action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fileTableBody">
+                            <!-- Table rows populate dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- RIGHT SIDEBAR: Birthday Celebrants Panel -->
+            <aside class="sidebar-right">
+                <div class="widget-card birthday-card">
+                    <div class="widget-header birthday-header">
+                        <div class="widget-title">
+                            <span class="material-symbols-outlined">cake</span>
+                            <span>Birthday Celebrants</span>
+                        </div>
+                        <button class="widget-action-btn" onclick="openAddBirthdayModal()" title="Add Celebrant">
+                            <span class="material-symbols-outlined" style="font-size: 1.1rem;">add</span>
+                        </button>
+                    </div>
+                    <div class="birthday-list" id="birthdayList">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- ADD SHOUT OUT MODAL -->
+    <div class="modal-backdrop" id="shoutoutModal">
+        <div class="modal-card">
+            <div class="modal-header" style="background-color: #6d28d9;">
+                <h2>Post Shout Out / Announcement</h2>
+                <button class="action-btn" onclick="closeAddShoutoutModal()" style="color: white;">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="receive-box" style="background: var(--accent-purple-bg);">
+                    <div class="field-group" style="margin-bottom: 0.75rem;">
+                        <label for="shoutAuthor">Name</label>
+                        <input type="text" id="shoutAuthor" placeholder="e.g. Engr. Santos (EGSD)" />
+                    </div>
+                    <div class="field-group" style="margin-bottom: 0.75rem;">
+                        <label for="shoutText">Announcement Message</label>
+                        <textarea id="shoutText" rows="3"
+                            placeholder="Type your announcement or shout out here..."></textarea>
+                    </div>
+                    <button class="btn-success" style="background-color: #6d28d9;" onclick="saveShoutout()">
+                        <span class="material-symbols-outlined">send</span>
+                        Post Shout Out
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAddShoutoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD MEETING MODAL -->
+    <div class="modal-backdrop" id="meetingModal">
+        <div class="modal-card">
+            <div class="modal-header" style="background-color: #0369a1;">
+                <h2>Schedule Upcoming Meeting</h2>
+                <button class="action-btn" onclick="closeAddMeetingModal()" style="color: white;">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="receive-box" style="background: var(--accent-blue-bg);">
+                    <div class="field-group" style="margin-bottom: 0.75rem;">
+                        <label for="meetTitle">Meeting Agenda / Title</label>
+                        <input type="text" id="meetTitle" placeholder="e.g. Weekly EGSD Technical Alignment" />
+                    </div>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label for="meetDateTime">Date & Time</label>
+                            <input type="datetime-local" id="meetDateTime" />
+                        </div>
+                        <div class="field-group">
+                            <label for="meetLocation">Venue / Room</label>
+                            <input type="text" id="meetLocation" placeholder="e.g. Conference Room B / Zoom" />
+                        </div>
+                    </div>
+                    <button class="btn-success" style="background-color: #0369a1;" onclick="saveMeeting()">
+                        <span class="material-symbols-outlined">event_available</span>
+                        Schedule Meeting
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAddMeetingModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD BIRTHDAY MODAL -->
+    <div class="modal-backdrop" id="birthdayModal">
+        <div class="modal-card">
+            <div class="modal-header" style="background-color: #ad1457;">
+                <h2>Register Birthday Celebrant</h2>
+                <button class="action-btn" onclick="closeAddBirthdayModal()" style="color: white;">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="receive-box" style="background: var(--accent-pink-bg);">
+                    <div class="field-group" style="margin-bottom: 0.75rem;">
+                        <label for="bdayName">Full Name</label>
+                        <input type="text" id="bdayName" placeholder="e.g. Engr. Juan Dela Cruz" />
+                    </div>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label for="bdayPosition">Position</label>
+                            <select id="bdayPosition">
+                                <option value="OIC">OIC</option>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="CLERK">CLERK</option>
+                                <option value="AMPON">AMPON</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="bdayDate">Birthday</label>
+                            <input type="date" id="bdayDate" />
+                        </div>
+                    </div>
+                    <button class="btn-success" style="background-color: #ad1457;" onclick="saveBirthdayCelebrant()">
+                        <span class="material-symbols-outlined">cake</span>
+                        Save Celebrant
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAddBirthdayModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD DOCUMENT MODAL -->
+    <div class="modal-backdrop" id="uploadModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Upload / Register Document</h2>
+                <button class="action-btn" onclick="closeUploadModal()" style="color: white;">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="receive-box">
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label for="uploadCategory">Category Tab</label>
+                            <select id="uploadCategory">
+                                <option value="TOR">TOR</option>
+                                <option value="MEMO">MEMO</option>
+                                <option value="OTHERS">OTHERS</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="uploadDocNo">Document Number</label>
+                            <input type="text" id="uploadDocNo" placeholder="e.g. TOR-ENG-2026-09" />
+                        </div>
+                    </div>
+                    <div class="field-group" style="margin-bottom: 0.75rem;">
+                        <label for="uploadSubject">Subject / Title</label>
+                        <input type="text" id="uploadSubject" placeholder="Enter file description or subject..." />
+                    </div>
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label for="uploadStatus">Initial Status</label>
+                            <select id="uploadStatus">
+                                <option value="Waiting for Approval">Waiting for Approval</option>
+                                <option value="Signed">Signed</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="uploadDate">Date Created</label>
+                            <input type="date" id="uploadDate" />
+                        </div>
+                    </div>
+                    <button class="btn-success" onclick="createNewDocument()">
+                        <span class="material-symbols-outlined">save</span>
+                        Save & Register Document
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeUploadModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIVISION TRACING HISTORY MODAL -->
+    <div class="modal-backdrop" id="traceModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Division Tracing History</h2>
+                <button class="action-btn" onclick="closeModal()" style="color: white;">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="doc-summary">
+                    <div>
+                        <div style="font-weight: 600;" id="modalDocNo">---</div>
+                        <div style="color: var(--text-muted);" id="modalSubject">---</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <label style="display: block; font-size: 0.75rem; color: var(--text-muted);">Doc Status</label>
+                        <select id="modalDocStatus" class="status-select" onchange="updateDocumentStatus(this.value)">
+                            <option value="Waiting for Approval">Waiting for Approval</option>
+                            <option value="Signed">Signed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="timeline" id="modalTimeline">
+                    <!-- Timeline entries inserted dynamically -->
+                </div>
+
+                <div class="receive-box">
+                    <h3
+                        style="font-size: 0.875rem; color: #0369a1; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+                        <span class="material-symbols-outlined" style="font-size: 1.1rem;">mark_email_read</span>
+                        Log Document Receipt & Action
+                    </h3>
+
+                    <div class="form-row">
+                        <div class="field-group">
+                            <label for="recvDivision">Receiving Division</label>
+                            <select id="recvDivision">
+                                <option value="">-- Select Division --</option>
+                                <option value="EGSD">EGSD</option>
+                                <option value="PPMD">PPMD</option>
+                                <option value="GAS">GAS</option>
+                                <option value="BUDGET">BUDGET</option>
+                                <option value="ACCOUNTING">ACCOUNTING</option>
+                                <option value="AFMO">AFMO</option>
+                                <option value="FMS">FMS</option>
+                                <option value="AFM">AFM</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="recvAction">Action / Status</label>
+                            <select id="recvAction" onchange="toggleCustomActionInput(this)">
+                                <option value="Received & Under Review">Received & Under Review</option>
+                                <option value="Signed">Signed</option>
+                                <option value="Custom">Custom Status...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field-group" id="customActionContainer" style="display: none; margin-bottom: 0.75rem;">
+                        <label>Custom Action Text</label>
+                        <input type="text" id="customActionText" placeholder="e.g. Returned for Revision" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="field-group" style="grid-column: span 2;">
+                            <label for="recvDateTime">Manual Date & Time Received</label>
+                            <input type="datetime-local" id="recvDateTime" />
+                        </div>
+                    </div>
+
+                    <button class="btn-success" onclick="addReceiptHistory()">
+                        <span class="material-symbols-outlined">add_task</span>
+                        Confirm & Log Entry
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEETING CALENDAR MODAL -->
+    <div class="modal-backdrop" id="calendarModal">
+        <div class="modal-card" style="max-width: 640px;">
+            <div class="modal-header" style="background-color: #0369a1;">
+                <h2>Meeting Calendar</h2>
+                <button class="action-btn" onclick="closeCalendarModal()" style="color: white;">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn" onclick="changeCalendarMonth(-1)" title="Previous Month">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <div class="calendar-month-label" id="calendarMonthLabel">---</div>
+                    <button class="calendar-nav-btn" onclick="changeCalendarMonth(1)" title="Next Month">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+
+                <div class="calendar-weekdays">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Day cells populated dynamically -->
+                </div>
+
+                <div class="calendar-selected-meetings">
+                    <h3 id="calendarSelectedLabel">Select a highlighted day to see its meetings</h3>
+                    <div class="meetings-list" id="calendarMeetingsList" style="max-height: 220px;">
+                        <!-- Meetings for selected day populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCalendarModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply saved theme immediately to avoid a flash of the wrong theme -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('egsd_theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+
+    <!-- Vanilla JavaScript Logic -->
+    <script>
+        // Dark / Light Mode Toggle
+        function applyThemeIcon() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const icon = document.getElementById('themeToggleIcon');
+            const btn = document.getElementById('themeToggleBtn');
+            icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+            btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('egsd_theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('egsd_theme', 'dark');
+            }
+            applyThemeIcon();
+        }
+
+        // Live Philippine Standard Time (PST) Clock
+        function startPSTClock() {
+            const clockElement = document.getElementById('phClock');
+            function updateClock() {
+                const now = new Date();
+                const options = {
+                    timeZone: 'Asia/Manila',
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                };
+                clockElement.textContent = now.toLocaleString('en-US', options);
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // Default File Data
+        const defaultData = {
+            TOR: [
+
+            ],
+            MEMO: [
+
+
+            ],
+            OTHERS: [
+
+            ]
+        };
+
+        // Default Shout Outs
+        const defaultShoutouts = [
+
+        ];
+
+        // Default Meetings
+        const defaultMeetings = [
+
+        ];
+
+        // Default Birthdays
+        const defaultBirthdays = [
+        ];
+
+        // Persistence Helpers
+        function loadStorage(key, fallback) {
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                try {return JSON.parse(saved);} catch (e) {return fallback;}
+            }
+            return fallback;
+        }
+
+        function saveStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // State Variables
+        const database = loadStorage('egsd_files_db', defaultData);
+        let shoutouts = loadStorage('egsd_shoutouts_db', defaultShoutouts);
+        let meetings = loadStorage('egsd_meetings_db', defaultMeetings);
+        let birthdays = loadStorage('egsd_birthdays_db', defaultBirthdays);
+
+        let activeTab = 'TOR';
+        let currentModalDocNo = null;
+
+        // Tab Switching
+        function switchTab(tabName) {
+            activeTab = tabName;
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(tabName));
+            });
+            document.getElementById('searchInput').value = '';
+            renderTable(database[activeTab]);
+        }
+
+        // Render Data Table
+        function renderTable(data) {
+            const tbody = document.getElementById('fileTableBody');
+            tbody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No documents found in this section.</td></tr>`;
+                return;
+            }
+
+            data.forEach(file => {
+                const chipClass = file.status === 'Signed' ? 'chip-signed' : 'chip-waiting';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+          <td class="col-docno" style="font-family: monospace; font-size: 0.85rem; color: var(--md-sys-color-primary);">${file.docNo}</td>
+          <td class="col-subject" style="font-weight: 500;">${file.subject}</td>
+          <td class="col-date">${file.date}</td>
+          <td class="col-status"><span class="chip ${chipClass}">${file.status}</span></td>
+          <td class="col-tracing">
+            <button class="trace-btn" onclick="openTracingModal('${file.docNo}')">
+              <span class="material-symbols-outlined" style="font-size: 1.1rem;">account_tree</span>
+              History
+            </button>
+          </td>
+          <td class="col-action">
+            <button class="action-btn" title="Download Document" onclick="downloadDocument('${file.docNo}')">
+              <span class="material-symbols-outlined">download</span>
+            </button>
+          </td>
+        `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Render Shout Outs
+        const SHOUTOUT_VISIBLE_THRESHOLD = 4;
+        let shoutoutsExpanded = false;
+
+        function renderShoutouts() {
+            const container = document.getElementById('shoutoutList');
+            const showMoreBtn = document.getElementById('shoutoutShowMoreBtn');
+            container.innerHTML = '';
+
+            if (shoutouts.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">No shout outs posted.</div>`;
+                showMoreBtn.style.display = 'none';
+                return;
+            }
+
+            shoutouts.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'shoutout-item';
+                div.innerHTML = `
+          <button class="item-delete-btn" onclick="deleteShoutout('${item.id}')" title="Delete">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+          <div class="shoutout-author">
+            <span>${item.author}</span>
+            <span style="font-weight: 400; opacity: 0.8;">${item.date}</span>
+          </div>
+          <div class="shoutout-text">${item.text}</div>
+        `;
+                container.appendChild(div);
+            });
+
+            if (shoutouts.length > SHOUTOUT_VISIBLE_THRESHOLD) {
+                showMoreBtn.style.display = 'block';
+                showMoreBtn.textContent = shoutoutsExpanded ? 'Show Less' : 'Show More';
+            } else {
+                showMoreBtn.style.display = 'none';
+            }
+            container.classList.toggle('expanded', shoutoutsExpanded);
+        }
+
+        function toggleShoutoutExpand() {
+            shoutoutsExpanded = !shoutoutsExpanded;
+            renderShoutouts();
+        }
+
+        // Render Meetings
+        function renderMeetings() {
+            const container = document.getElementById('meetingsList');
+            container.innerHTML = '';
+
+            if (meetings.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">No upcoming meetings.</div>`;
+                return;
+            }
+
+            meetings.forEach(m => {
+                const dt = new Date(m.datetime);
+                const formattedDate = dt.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
+                const formattedTime = dt.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
+
+                const div = document.createElement('div');
+                div.className = 'meeting-item';
+                div.innerHTML = `
+          <button class="item-delete-btn" onclick="deleteMeeting('${m.id}')" title="Cancel Meeting">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+          <div class="meeting-title">${m.title}</div>
+          <div class="meeting-detail">
+            <span class="material-symbols-outlined" style="font-size: 0.85rem;">schedule</span>
+            ${formattedDate} at ${formattedTime}
+          </div>
+          <div class="meeting-detail">
+            <span class="material-symbols-outlined" style="font-size: 0.85rem;">location_on</span>
+            ${m.location}
+          </div>
+        `;
+                container.appendChild(div);
+            });
+        }
+
+        // Render Birthday List
+        function renderBirthdays() {
+            const container = document.getElementById('birthdayList');
+            container.innerHTML = '';
+
+            if (birthdays.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">No celebrants listed.</div>`;
+                return;
+            }
+
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            birthdays.forEach(bday => {
+                const [mStr, dStr] = bday.date.split('-');
+                const monthName = months[parseInt(mStr, 10) - 1] || mStr;
+                const formattedDate = `${monthName} ${parseInt(dStr, 10)}`;
+
+                const initials = bday.name.replace(/^(Engr\.|Arch\.|Dr\.|Mr\.|Ms\.)\s+/i, '')
+                    .split(' ')
+                    .map(n => n[0])
+                    .slice(0, 2)
+                    .join('')
+                    .toUpperCase();
+
+                const item = document.createElement('div');
+                item.className = 'birthday-item';
+                item.innerHTML = `
+          <div class="birthday-avatar">${initials}</div>
+          <div class="birthday-info">
+            <div class="birthday-name">${bday.name}</div>
+            <div class="birthday-position">${bday.position}</div>
+            <div class="birthday-date">
+              <span class="material-symbols-outlined" style="font-size: 0.85rem;">event</span>
+              ${formattedDate}
+            </div>
+          </div>
+          <button class="item-delete-btn" onclick="deleteBirthday('${bday.id}')" title="Remove">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        `;
+                container.appendChild(item);
+            });
+        }
+
+        // Auto-scroll the birthday list upward, one step every second
+        function startBirthdayTicker() {
+            setInterval(() => {
+                const container = document.getElementById('birthdayList');
+                if (!container || container.scrollHeight <= container.clientHeight) return;
+
+                const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 1;
+                if (atBottom) {
+                    container.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    container.scrollBy({ top: 41, behavior: 'smooth' });
+                }
+            }, 1000);
+        }
+
+        // Meeting Reminder Popups — fires once, 10 minutes before a meeting's date & time
+        const REMINDER_WINDOW_MS = 10 * 60 * 1000;
+        let notifiedMeetingIds = new Set(loadStorage('egsd_notified_meetings', []));
+
+        function checkMeetingReminders() {
+            const now = new Date().getTime();
+
+            meetings.forEach(m => {
+                if (!m.datetime || notifiedMeetingIds.has(m.id)) return;
+
+                const meetingTime = new Date(m.datetime).getTime();
+                const msUntil = meetingTime - now;
+
+                if (msUntil > 0 && msUntil <= REMINDER_WINDOW_MS) {
+                    showMeetingReminderToast(m, msUntil);
+                    notifiedMeetingIds.add(m.id);
+                    saveStorage('egsd_notified_meetings', Array.from(notifiedMeetingIds));
+                }
+            });
+        }
+
+        function showMeetingReminderToast(meeting, msUntil) {
+            const minutesLeft = Math.max(1, Math.round(msUntil / 60000));
+            const dt = new Date(meeting.datetime);
+            const formattedTime = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            const toast = document.createElement('div');
+            toast.className = 'reminder-toast';
+            toast.innerHTML = `
+        <button class="reminder-toast-close" title="Dismiss" onclick="this.parentElement.remove()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+        <div class="reminder-toast-header">
+          <span class="material-symbols-outlined">notifications_active</span>
+          Meeting starting in ${minutesLeft} min
+        </div>
+        <div class="reminder-toast-title">${escapeHtml(meeting.title)}</div>
+        <div class="reminder-toast-detail">
+          <span class="material-symbols-outlined">schedule</span>
+          ${formattedTime}
+        </div>
+        <div class="reminder-toast-detail">
+          <span class="material-symbols-outlined">location_on</span>
+          ${escapeHtml(meeting.location)}
+        </div>
+      `;
+
+            document.getElementById('reminderToastContainer').appendChild(toast);
+
+            // Auto-dismiss after 30 seconds if the user doesn't close it
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, 30000);
+        }
+
+        function startMeetingReminderWatcher() {
+            checkMeetingReminders();
+            setInterval(checkMeetingReminders, 15000);
+        }
+
+        // Filter Files with Search Bar (searches by Document Number and Subject)
+        function filterFiles() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const currentCategoryFiles = database[activeTab] || [];
+
+            const filtered = currentCategoryFiles.filter(file =>
+                file.docNo.toLowerCase().includes(query) ||
+                file.subject.toLowerCase().includes(query)
+            );
+
+            renderTable(filtered);
+        }
+
+        // Summary Statistics Counter
+        function updateStats() {
+            let total = 0, signed = 0, waiting = 0;
+
+            Object.values(database).forEach(cat => {
+                cat.forEach(file => {
+                    total++;
+                    if (file.status === 'Signed') signed++;
+                    else waiting++;
+                });
+            });
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statSigned').textContent = signed;
+            document.getElementById('statWaiting').textContent = waiting;
+            document.getElementById('statMeetings').textContent = meetings.length;
+            document.getElementById('statBirthday').textContent = birthdays.length;
+        }
+
+        // Find Document Helper (looked up by Document Number, which is the unique key)
+        function findDoc(docNo) {
+            for (const cat in database) {
+                const item = database[cat].find(d => d.docNo === docNo);
+                if (item) return {doc: item, category: cat};
+            }
+            return null;
+        }
+
+        // Modals: Tracing History
+        function openTracingModal(docNo) {
+            currentModalDocNo = docNo;
+            const res = findDoc(docNo);
+            if (!res) return;
+
+            const doc = res.doc;
+            document.getElementById('modalDocNo').textContent = `${doc.docNo}`;
+            document.getElementById('modalSubject').textContent = doc.subject;
+            document.getElementById('modalDocStatus').value = doc.status;
+
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('recvDateTime').value = now.toISOString().slice(0, 16);
+
+            renderTimeline(doc.history);
+            document.getElementById('traceModal').classList.add('active');
+        }
+
+        function renderTimeline(history) {
+            const container = document.getElementById('modalTimeline');
+            container.innerHTML = '';
+
+            if (!history || history.length === 0) {
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem;">No history records found.</div>`;
+                return;
+            }
+
+            history.forEach((h, index) => {
+                const isLatest = index === history.length - 1;
+                const item = document.createElement('div');
+                item.className = `timeline-item ${isLatest ? 'latest' : ''}`;
+                item.innerHTML = `
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-division">${h.division}</div>
+            <div class="timeline-date">
+              <span class="material-symbols-outlined" style="font-size: 0.85rem;">schedule</span>
+              ${h.date}
+            </div>
+            <div class="timeline-status">${h.action}</div>
+          </div>
+        `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateDocumentStatus(newStatus) {
+            if (!currentModalDocNo) return;
+            const res = findDoc(currentModalDocNo);
+            if (res) {
+                res.doc.status = newStatus;
+                saveStorage('egsd_files_db', database);
+                renderTable(database[activeTab]);
+                updateStats();
+            }
+        }
+
+        function toggleCustomActionInput(select) {
+            document.getElementById('customActionContainer').style.display = select.value === 'Custom' ? 'flex' : 'none';
+        }
+
+        function addReceiptHistory() {
+            if (!currentModalDocNo) return;
+
+            const divSelect = document.getElementById('recvDivision');
+            const actionSelect = document.getElementById('recvAction');
+            const customInput = document.getElementById('customActionText');
+            const dateTimeInput = document.getElementById('recvDateTime');
+
+            const division = divSelect.value;
+            if (!division) {
+                alert('Please select a Receiving Division.');
+                return;
+            }
+
+            let action = actionSelect.value === 'Custom' ? (customInput.value.trim() || 'Updated') : actionSelect.value;
+            let dateFormatted = dateTimeInput.value ? new Date(dateTimeInput.value).toLocaleString() : new Date().toLocaleString();
+
+            const res = findDoc(currentModalDocNo);
+            if (res) {
+                res.doc.history.push({division, date: dateFormatted, action});
+                if (action === 'Signed') {
+                    res.doc.status = 'Signed';
+                    document.getElementById('modalDocStatus').value = 'Signed';
+                }
+                saveStorage('egsd_files_db', database);
+                renderTimeline(res.doc.history);
+                renderTable(database[activeTab]);
+                updateStats();
+
+                divSelect.value = '';
+                actionSelect.value = 'Received & Under Review';
+                customInput.value = '';
+                document.getElementById('customActionContainer').style.display = 'none';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('traceModal').classList.remove('active');
+            currentModalDocNo = null;
+        }
+
+        // Modal Controls: File Upload
+        function openUploadModal() {
+            document.getElementById('uploadCategory').value = activeTab;
+            document.getElementById('uploadDocNo').value = '';
+            document.getElementById('uploadSubject').value = '';
+            document.getElementById('uploadDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('uploadModal').classList.add('active');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('active');
+        }
+
+        function createNewDocument() {
+            const category = document.getElementById('uploadCategory').value;
+            const docNo = document.getElementById('uploadDocNo').value.trim();
+            const subject = document.getElementById('uploadSubject').value.trim();
+            const status = document.getElementById('uploadStatus').value;
+            const date = document.getElementById('uploadDate').value;
+
+            if (!docNo || !subject) {
+                alert('Please fill out both Document Number and Subject.');
+                return;
+            }
+
+            // Document Number must be unique across the whole database since it is now the primary key
+            if (findDoc(docNo)) {
+                alert('A document with this Document Number already exists. Please use a unique Document Number.');
+                return;
+            }
+
+            const newDoc = {
+                docNo,
+                subject,
+                date: date || new Date().toISOString().split('T')[0],
+                status,
+                history: [{division: 'EGSD', date: new Date().toLocaleString(), action: 'Document Registered'}]
+            };
+
+            database[category].unshift(newDoc);
+            saveStorage('egsd_files_db', database);
+            closeUploadModal();
+            switchTab(category);
+            updateStats();
+        }
+
+        // Modal Controls: Shout Out
+        function openAddShoutoutModal() {
+            document.getElementById('shoutAuthor').value = '';
+            document.getElementById('shoutText').value = '';
+            document.getElementById('shoutoutModal').classList.add('active');
+        }
+
+        function closeAddShoutoutModal() {
+            document.getElementById('shoutoutModal').classList.remove('active');
+        }
+
+        function saveShoutout() {
+            const author = document.getElementById('shoutAuthor').value.trim();
+            const text = document.getElementById('shoutText').value.trim();
+
+            if (!author || !text) {
+                alert('Please fill in both the author and message fields.');
+                return;
+            }
+
+            shoutouts.unshift({
+                id: 's_' + Date.now(),
+                author,
+                text,
+                date: new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})
+            });
+
+            saveStorage('egsd_shoutouts_db', shoutouts);
+            renderShoutouts();
+            closeAddShoutoutModal();
+        }
+
+        function deleteShoutout(id) {
+            shoutouts = shoutouts.filter(s => s.id !== id);
+            saveStorage('egsd_shoutouts_db', shoutouts);
+            renderShoutouts();
+        }
+
+        // Modal Controls: Meetings
+        function openAddMeetingModal() {
+            document.getElementById('meetTitle').value = '';
+            document.getElementById('meetLocation').value = '';
+            document.getElementById('meetDateTime').value = '';
+            document.getElementById('meetingModal').classList.add('active');
+        }
+
+        function closeAddMeetingModal() {
+            document.getElementById('meetingModal').classList.remove('active');
+        }
+
+        function saveMeeting() {
+            const title = document.getElementById('meetTitle').value.trim();
+            const datetime = document.getElementById('meetDateTime').value;
+            const location = document.getElementById('meetLocation').value.trim();
+
+            if (!title || !datetime || !location) {
+                alert('Please fill out all fields for the meeting.');
+                return;
+            }
+
+            meetings.push({
+                id: 'm_' + Date.now(),
+                title,
+                datetime,
+                location
+            });
+
+            meetings.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+            saveStorage('egsd_meetings_db', meetings);
+            renderMeetings();
+            updateStats();
+            closeAddMeetingModal();
+            checkMeetingReminders();
+            if (document.getElementById('calendarModal').classList.contains('active')) {
+                renderCalendarGrid();
+            }
+        }
+
+        function deleteMeeting(id) {
+            meetings = meetings.filter(m => m.id !== id);
+            saveStorage('egsd_meetings_db', meetings);
+            notifiedMeetingIds.delete(id);
+            saveStorage('egsd_notified_meetings', Array.from(notifiedMeetingIds));
+            renderMeetings();
+            updateStats();
+            if (document.getElementById('calendarModal').classList.contains('active')) {
+                renderCalendarGrid();
+            }
+        }
+
+        // Modal Controls: Meeting Calendar
+        let calendarViewDate = new Date();
+        let calendarSelectedDateKey = null;
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str == null ? '' : str;
+            return div.innerHTML;
+        }
+
+        function dateKey(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        function meetingsOnDateKey(key) {
+            return meetings.filter(m => m.datetime && m.datetime.slice(0, 10) === key);
+        }
+
+        function openCalendarModal() {
+            calendarViewDate = new Date();
+            calendarSelectedDateKey = null;
+            renderCalendarGrid();
+            document.getElementById('calendarModal').classList.add('active');
+        }
+
+        function closeCalendarModal() {
+            document.getElementById('calendarModal').classList.remove('active');
+        }
+
+        function changeCalendarMonth(delta) {
+            calendarViewDate = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + delta, 1);
+            calendarSelectedDateKey = null;
+            renderCalendarGrid();
+        }
+
+        function renderCalendarGrid() {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const year = calendarViewDate.getFullYear();
+            const month = calendarViewDate.getMonth();
+
+            document.getElementById('calendarMonthLabel').textContent = `${monthNames[month]} ${year}`;
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            const firstDayOfMonth = new Date(year, month, 1);
+            const startOffset = firstDayOfMonth.getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const todayKey = dateKey(new Date());
+
+            for (let i = 0; i < startOffset; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'calendar-day empty';
+                grid.appendChild(empty);
+            }
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const cellDate = new Date(year, month, d);
+                const key = dateKey(cellDate);
+                const dayMeetings = meetingsOnDateKey(key);
+
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+                if (dayMeetings.length > 0) cell.classList.add('has-event');
+                if (key === todayKey) cell.classList.add('today');
+                if (key === calendarSelectedDateKey) cell.classList.add('selected');
+
+                let eventHtml = '';
+                if (dayMeetings.length > 0) {
+                    const first = dayMeetings[0];
+                    eventHtml = `
+            <div class="calendar-event-box">
+              <div class="calendar-event-agenda" title="${escapeHtml(first.title)}">${escapeHtml(first.title)}</div>
+              <div class="calendar-event-venue" title="${escapeHtml(first.location)}">
+                <span class="material-symbols-outlined">location_on</span>${escapeHtml(first.location)}
+              </div>
+              ${dayMeetings.length > 1 ? `<div class="calendar-event-more">+${dayMeetings.length - 1} more</div>` : ''}
+            </div>`;
+                }
+
+                cell.innerHTML = `<span class="calendar-day-num">${d}</span>${eventHtml}`;
+
+                if (dayMeetings.length > 0) {
+                    cell.onclick = () => selectCalendarDay(key);
+                }
+
+                grid.appendChild(cell);
+            }
+
+            if (calendarSelectedDateKey) {
+                renderCalendarSelectedMeetings(calendarSelectedDateKey);
+            } else {
+                document.getElementById('calendarSelectedLabel').textContent = 'Select a highlighted day to see its meetings';
+                document.getElementById('calendarMeetingsList').innerHTML = '';
+            }
+        }
+
+        function selectCalendarDay(key) {
+            calendarSelectedDateKey = key;
+            renderCalendarGrid();
+        }
+
+        function renderCalendarSelectedMeetings(key) {
+            const label = document.getElementById('calendarSelectedLabel');
+            const container = document.getElementById('calendarMeetingsList');
+            const dayMeetings = meetingsOnDateKey(key);
+
+            const labelDate = new Date(key + 'T00:00:00');
+            label.textContent = `Meetings on ${labelDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`;
+
+            container.innerHTML = '';
+            dayMeetings.forEach(m => {
+                const dt = new Date(m.datetime);
+                const formattedTime = dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                const div = document.createElement('div');
+                div.className = 'meeting-item';
+                div.innerHTML = `
+          <div class="meeting-title">${m.title}</div>
+          <div class="meeting-detail">
+            <span class="material-symbols-outlined" style="font-size: 0.85rem;">schedule</span>
+            ${formattedTime}
+          </div>
+          <div class="meeting-detail">
+            <span class="material-symbols-outlined" style="font-size: 0.85rem;">location_on</span>
+            ${m.location}
+          </div>
+        `;
+                container.appendChild(div);
+            });
+        }
+
+        // Modal Controls: Birthday
+        function openAddBirthdayModal() {
+            document.getElementById('bdayName').value = '';
+            document.getElementById('bdayDate').value = '';
+            document.getElementById('birthdayModal').classList.add('active');
+        }
+
+        function closeAddBirthdayModal() {
+            document.getElementById('birthdayModal').classList.remove('active');
+        }
+
+        function saveBirthdayCelebrant() {
+            const name = document.getElementById('bdayName').value.trim();
+            const position = document.getElementById('bdayPosition').value;
+            const dateVal = document.getElementById('bdayDate').value;
+
+            if (!name || !dateVal) {
+                alert('Please provide the name and date.');
+                return;
+            }
+
+            const [, month, day] = dateVal.split('-');
+            birthdays.push({id: 'b_' + Date.now(), name, position, date: `${month}-${day}`});
+
+            saveStorage('egsd_birthdays_db', birthdays);
+            renderBirthdays();
+            updateStats();
+            closeAddBirthdayModal();
+        }
+
+        function deleteBirthday(id) {
+            birthdays = birthdays.filter(b => b.id !== id);
+            saveStorage('egsd_birthdays_db', birthdays);
+            renderBirthdays();
+            updateStats();
+        }
+
+        function downloadDocument(docNo) {
+            const res = findDoc(docNo);
+            if (res) {
+                alert(`Downloading file for ${res.doc.docNo}...`);
+            }
+        }
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            applyThemeIcon();
+            startPSTClock();
+            renderTable(database[activeTab]);
+            renderShoutouts();
+            renderMeetings();
+            renderBirthdays();
+            startBirthdayTicker();
+            startMeetingReminderWatcher();
+            updateStats();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Account</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f7f8fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 40px 24px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 620px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .card-header {
+    background: #4a90f7;
+    padding: 36px 48px;
+    text-align: center;
+  }
+  .card-header img {
+    width: 56px;
+    height: auto;
+    margin-bottom: 8px;
+  }
+  .card-header h1 {
+    margin: 0;
+    color: #fff;
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .card-header p {
+    margin: 6px 0 0;
+    color: #e3edfe;
+    font-size: 14px;
+  }
+
+  form {
+    padding: 40px 48px 32px;
+  }
+
+  /* Two-column layout for paired fields on wider screens */
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+  }
+
+  @media (max-width: 560px) {
+    .card-header { padding: 26px 24px; }
+    .card-header h1 { font-size: 20px; }
+    form { padding: 28px 24px 20px; }
+    .row { grid-template-columns: 1fr; gap: 0; }
+    .success-card { padding: 32px 24px; }
+  }
+
+  .field {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .field label {
+    position: absolute;
+    left: 0;
+    top: 20px;
+    font-size: 15px;
+    color: #757575;
+    background: #fff;
+    padding-right: 4px;
+    pointer-events: none;
+    transition: all 0.15s ease;
+    z-index: 1;
+  }
+
+  .field.floated label,
+  .field.always-float label {
+    top: 0;
+    font-size: 12px;
+  }
+
+  .field.focused label {
+    color: #4a90f7;
+  }
+
+  .field.error label {
+    color: #e53935;
+  }
+
+  .field input {
+    position: relative;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid #d0d0d0;
+    outline: none;
+    font-size: 15px;
+    color: #1a1a1a;
+    padding: 20px 0 8px;
+    font-family: inherit;
+  }
+
+  .field.error input {
+    border-bottom-color: #e53935;
+  }
+
+  .field .underline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1.5px;
+    height: 2px;
+    background: #4a90f7;
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+  }
+  .field.focused:not(.error) .underline {
+    transform: scaleX(1);
+  }
+
+  .field .toggle-pw {
+    position: absolute;
+    right: 0;
+    top: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9aa0a6;
+    padding: 4px;
+    display: flex;
+    z-index: 1;
+  }
+  .field .toggle-pw:hover { color: #5f6368; }
+
+  .helper {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #757575;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .field.error .helper { color: #e53935; }
+
+  .gender-block { margin-bottom: 8px; }
+  .gender-label {
+    font-size: 12px;
+    color: #757575;
+    margin-bottom: 10px;
+  }
+  .gender-block.error .gender-label { color: #e53935; }
+
+  .gender-options {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 10px 24px;
+    justify-content: start;
+  }
+
+  @media (max-width: 560px) {
+    .gender-options { grid-template-columns: 1fr 1fr; }
+  }
+
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .radio-option input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #9aa0a6;
+    border-radius: 50%;
+    margin: 0;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .radio-option input[type="radio"]:checked {
+    border-color: #4a90f7;
+  }
+
+  .radio-option input[type="radio"]:checked::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #4a90f7;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .gender-error {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #e53935;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .submit-btn {
+    margin-top: 24px;
+    width: 100%;
+    background: #4a90f7;
+    color: #fff;
+    border: none;
+    padding: 13px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .submit-btn:hover { background: #3a7de0; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  .submit-btn:active { background: #2f6fd0; }
+
+  .signin-note {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #757575;
+  }
+  .signin-note .signin-link {
+    color: #4a90f7;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .signin-note .signin-link:hover { text-decoration: underline; }
+
+  /* Success view */
+  .success-card {
+    padding: 40px;
+    text-align: center;
+    display: none;
+  }
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #e8f0fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .success-card h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #1a1a1a;
+  }
+  .success-card p {
+    margin: 0 0 24px;
+    font-size: 14px;
+    color: #757575;
+  }
+  .again-btn {
+    background: none;
+    border: none;
+    color: #4a90f7;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+  }
+  .again-btn:hover { background: #e8f0fe; }
+
+  .icon { width: 16px; height: 16px; flex-shrink: 0; }
+</style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-config.js"></script>
+</head>
+<body>
+
+<div class="card" id="formCard">
+  <div class="card-header">
+    <img src="logo.svg" alt="Engineering & General Services Division logo" />
+    <h1>Create account</h1>
+    <p>Fill in your details to register</p>
+  </div>
+
+  <form id="regForm" novalidate>
+    <div class="field" id="field-codename">
+      <label for="codename">Code name</label>
+      <input type="text" id="codename" name="codename" autocomplete="off" />
+      <div class="underline"></div>
+      <div class="helper" id="helper-codename">This is how you'll appear to others</div>
+    </div>
+
+    <div class="row">
+      <div class="field" id="field-password">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="new-password" />
+        <div class="underline"></div>
+        <button type="button" class="toggle-pw" data-target="password">
+          <svg class="icon eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <div class="helper" id="helper-password" style="display:none;"></div>
+      </div>
+
+      <div class="field" id="field-confirmPassword">
+        <label for="confirmPassword">Confirm password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" />
+        <div class="underline"></div>
+        <button type="button" class="toggle-pw" data-target="confirmPassword">
+          <svg class="icon eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <div class="helper" id="helper-confirmPassword" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div class="field always-float" id="field-bday">
+      <label for="bday">Birthday</label>
+      <input type="date" id="bday" name="bday" />
+      <div class="underline"></div>
+      <div class="helper" id="helper-bday" style="display:none;"></div>
+    </div>
+
+    <div class="gender-block" id="field-gender">
+      <div class="gender-label">Gender</div>
+      <div class="gender-options">
+        <label class="radio-option"><input type="radio" name="gender" value="Male" /> Male</label>
+        <label class="radio-option"><input type="radio" name="gender" value="Female" /> Female</label>
+        <label class="radio-option"><input type="radio" name="gender" value="Non-binary" /> Non-binary</label>
+        <label class="radio-option"><input type="radio" name="gender" value="Prefer not to say" /> Prefer not to say</label>
+      </div>
+      <div class="gender-error" id="error-gender" style="display:none;"></div>
+    </div>
+
+    <button type="submit" class="submit-btn">Register</button>
+
+    <p class="signin-note">Already have an account? <a href="login.html" class="signin-link">Sign in</a></p>
+  </form>
+</div>
+
+<div class="card success-card" id="successCard">
+  <div class="success-icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4a90f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <h2>Account created</h2>
+  <p id="successMsg">Welcome. Your registration is complete.</p>
+  <button class="again-btn" id="againBtn">Register another</button>
+</div>
+
+<script>
+  const form = document.getElementById('regForm');
+  const formCard = document.getElementById('formCard');
+  const successCard = document.getElementById('successCard');
+  const successMsg = document.getElementById('successMsg');
+  const againBtn = document.getElementById('againBtn');
+
+  const errorIconSvg = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+  // Floating label behavior for text-like fields
+  ['codename', 'password', 'confirmPassword', 'bday'].forEach(id => {
+    const input = document.getElementById(id);
+    const fieldEl = document.getElementById('field-' + id);
+
+    const updateFloat = () => {
+      if (input.value && input.value.length > 0) {
+        fieldEl.classList.add('floated');
+      } else {
+        fieldEl.classList.remove('floated');
+      }
+    };
+
+    input.addEventListener('focus', () => fieldEl.classList.add('focused'));
+    input.addEventListener('blur', () => {
+      fieldEl.classList.remove('focused');
+      validateField(id);
+    });
+    input.addEventListener('input', updateFloat);
+    updateFloat();
+  });
+
+  // Password visibility toggles
+  document.querySelectorAll('.toggle-pw').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      const isPw = input.type === 'password';
+      input.type = isPw ? 'text' : 'password';
+      btn.innerHTML = isPw
+        ? '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.8 21.8 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.8 21.8 0 0 1-3.22 4.53M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+        : '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    });
+  });
+
+  // Gender radios
+  document.querySelectorAll('input[name="gender"]').forEach(radio => {
+    radio.addEventListener('change', () => validateField('gender'));
+  });
+
+  function setError(fieldKey, message) {
+    if (fieldKey === 'gender') {
+      const block = document.getElementById('field-gender');
+      const errEl = document.getElementById('error-gender');
+      if (message) {
+        block.classList.add('error');
+        errEl.style.display = 'flex';
+        errEl.innerHTML = errorIconSvg + message;
+      } else {
+        block.classList.remove('error');
+        errEl.style.display = 'none';
+        errEl.innerHTML = '';
+      }
+      return;
+    }
+
+    const fieldEl = document.getElementById('field-' + fieldKey);
+    const helperEl = document.getElementById('helper-' + fieldKey);
+    if (message) {
+      fieldEl.classList.add('error');
+      helperEl.style.display = 'flex';
+      helperEl.innerHTML = errorIconSvg + message;
+    } else {
+      fieldEl.classList.remove('error');
+      if (fieldKey === 'codename') {
+        helperEl.style.display = 'flex';
+        helperEl.innerHTML = "This is how you'll appear to others";
+      } else {
+        helperEl.style.display = 'none';
+        helperEl.innerHTML = '';
+      }
+    }
+  }
+
+  function validateField(fieldKey) {
+    const codename = document.getElementById('codename').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const bday = document.getElementById('bday').value;
+    const genderChecked = document.querySelector('input[name="gender"]:checked');
+
+    let message = '';
+    if (fieldKey === 'codename') {
+      message = codename.length < 3 ? 'Code name must be at least 3 characters' : '';
+    } else if (fieldKey === 'password') {
+      message = password.length < 6 ? 'Password must be at least 6 characters' : '';
+    } else if (fieldKey === 'confirmPassword') {
+      message = confirmPassword !== password ? 'Passwords do not match' : '';
+    } else if (fieldKey === 'bday') {
+      message = !bday ? 'Birthday is required' : '';
+    } else if (fieldKey === 'gender') {
+      message = !genderChecked ? 'Please select a gender' : '';
+    }
+    setError(fieldKey, message);
+    return message === '';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fields = ['codename', 'password', 'confirmPassword', 'bday', 'gender'];
+    const results = fields.map(validateField);
+    const allValid = results.every(Boolean);
+    if (!allValid) return;
+
+    const codename = document.getElementById('codename').value.trim();
+    const password = document.getElementById('password').value;
+    const bday = document.getElementById('bday').value;
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+
+    const submitBtn = form.querySelector('.submit-btn');
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering…';
+    hideFormError();
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: codenameToEmail(codename),
+      password: password,
+      options: {
+        data: { codename, birthday: bday, gender }
+      }
+    });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+
+    if (error) {
+      if (error.message.toLowerCase().includes('already registered') ||
+          error.message.toLowerCase().includes('already exists')) {
+        showFormError('That code name is already taken. Please choose another.');
+      } else {
+        showFormError(error.message);
+      }
+      return;
+    }
+
+    successMsg.textContent = `Welcome, ${codename}. Your registration is complete.`;
+    formCard.style.display = 'none';
+    successCard.style.display = 'block';
+  });
+
+  function showFormError(message) {
+    let errEl = document.getElementById('formError');
+    if (!errEl) {
+      errEl = document.createElement('div');
+      errEl.id = 'formError';
+      errEl.style.cssText = 'background:#fdecea;color:#e53935;font-size:13px;padding:10px 14px;border-radius:4px;margin-bottom:18px;';
+      form.insertBefore(errEl, form.firstChild);
+    }
+    errEl.textContent = message;
+  }
+
+  function hideFormError() {
+    const errEl = document.getElementById('formError');
+    if (errEl) errEl.remove();
+  }
+
+  againBtn.addEventListener('click', () => {
+    form.reset();
+    ['codename', 'password', 'confirmPassword', 'bday'].forEach(id => {
+      document.getElementById('field-' + id).classList.remove('floated', 'error', 'focused');
+    });
+    document.getElementById('field-gender').classList.remove('error');
+    document.getElementById('error-gender').style.display = 'none';
+    document.getElementById('helper-codename').innerHTML = "This is how you'll appear to others";
+    document.getElementById('helper-password').style.display = 'none';
+    document.getElementById('helper-confirmPassword').style.display = 'none';
+    document.getElementById('helper-bday').style.display = 'none';
+    successCard.style.display = 'none';
+    formCard.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>

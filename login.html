@@ -226,11 +226,11 @@
   </div>
 
   <form id="loginForm" novalidate>
-    <div class="field" id="field-codename">
-      <label for="codename">Code name</label>
-      <input type="text" id="codename" name="codename" autocomplete="username" />
+    <div class="field" id="field-email">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" autocomplete="username" />
       <div class="underline"></div>
-      <div class="helper" id="helper-codename"></div>
+      <div class="helper" id="helper-email"></div>
     </div>
 
     <div class="field" id="field-password">
@@ -260,7 +260,7 @@
 <script>
   const errorIconSvg = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
 
-  ['codename', 'password'].forEach(id => {
+  ['email', 'password'].forEach(id => {
     const input = document.getElementById(id);
     const fieldEl = document.getElementById('field-' + id);
 
@@ -305,12 +305,14 @@
     }
   }
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   function validateField(fieldKey) {
-    const codename = document.getElementById('codename').value.trim();
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     let message = '';
-    if (fieldKey === 'codename') {
-      message = codename.length === 0 ? 'Code name is required' : '';
+    if (fieldKey === 'email') {
+      message = !emailPattern.test(email) ? 'Enter a valid email address' : '';
     } else if (fieldKey === 'password') {
       message = password.length === 0 ? 'Password is required' : '';
     }
@@ -338,11 +340,11 @@
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const ok1 = validateField('codename');
+    const ok1 = validateField('email');
     const ok2 = validateField('password');
     if (!ok1 || !ok2) return;
 
-    const codename = document.getElementById('codename').value.trim();
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
     const submitBtn = loginForm.querySelector('.submit-btn');
@@ -352,7 +354,7 @@
     hideFormError();
 
     const { data, error } = await supabaseClient.auth.signInWithPassword({
-      email: codenameToEmail(codename),
+      email: email,
       password: password
     });
 
@@ -360,11 +362,11 @@
     submitBtn.textContent = originalLabel;
 
     if (error) {
-      showFormError('Incorrect code name or password.');
+      showFormError('Incorrect email or password.');
       return;
     }
 
-    const displayName = data.user.user_metadata?.codename || codename;
+    const displayName = data.user.user_metadata?.codename || email;
     alert(`Welcome back, ${displayName}!`);
     // Redirect to your app's main page here, e.g.:
     // window.location.href = "dashboard.html";

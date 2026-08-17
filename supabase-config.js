@@ -1,4 +1,5 @@
 // Supabase project config — shared by registration.html and login.html
+// Supabase project config — shared by registration.html and login.html
 const SUPABASE_URL = "https://gufajzpankaemsaceywq.supabase.co";
 const SUPABASE_KEY = "sb_publishable__d9TsCMfb_btbgawBz3N9Q_6nWLKlFH";
 

@@ -366,10 +366,9 @@
       return;
     }
 
-    const displayName = data.user.user_metadata?.codename || email;
-    alert(`Welcome back, ${displayName}!`);
-    // Redirect to your app's main page here, e.g.:
-    // window.location.href = "dashboard.html";
+    // Successful login: go straight to the dashboard, which reads the
+    // active Supabase session to show the logged-in user.
+    window.location.href = "index.html";
   });
 </script>
 

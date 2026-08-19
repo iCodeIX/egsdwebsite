@@ -11,6 +11,10 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
+    <!-- Supabase client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="supabase-config.js"></script>
+
     <style>
         :root {
             --md-sys-color-primary: #0d47a1;
@@ -122,6 +126,22 @@
             gap: 1.25rem;
         }
 
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .user-info .material-symbols-outlined {
+            font-size: 1.2rem;
+        }
+
         .theme-toggle-btn {
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -140,6 +160,11 @@
         .theme-toggle-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: rotate(15deg);
+        }
+
+        .theme-toggle-btn.logout-btn:hover {
+            transform: none;
+            background: rgba(229, 57, 53, 0.4);
         }
 
         .theme-toggle-btn .material-symbols-outlined {
@@ -1214,9 +1239,20 @@
                 <div class="clock-display" id="phClock">Loading PST time...</div>
             </div>
 
+            <!-- Logged-in user -->
+            <div class="user-info" id="userInfo">
+                <span class="material-symbols-outlined">account_circle</span>
+                <span id="userEmailDisplay">Loading...</span>
+            </div>
+
             <!-- Dark / Light Mode Toggle -->
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Switch theme">
                 <span class="material-symbols-outlined" id="themeToggleIcon">dark_mode</span>
+            </button>
+
+            <!-- Logout -->
+            <button class="theme-toggle-btn logout-btn" onclick="logoutUser()" title="Log out">
+                <span class="material-symbols-outlined">logout</span>
             </button>
         </div>
     </header>
@@ -1677,6 +1713,28 @@
 
     <!-- Vanilla JavaScript Logic -->
     <script>
+        // ---- Auth: current user + logout ----
+        async function loadCurrentUser() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                if (error || !user) {
+                    window.location.href = "login.html";
+                    return;
+                }
+                const codename = user.user_metadata?.codename;
+                document.getElementById('userEmailDisplay').textContent = codename
+                    ? `${codename} (${user.email})`
+                    : user.email;
+            } catch (e) {
+                window.location.href = "login.html";
+            }
+        }
+
+        async function logoutUser() {
+            await supabaseClient.auth.signOut();
+            window.location.href = "login.html";
+        }
+
         // Dark / Light Mode Toggle
         function applyThemeIcon() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -2475,6 +2533,7 @@
 
         // Initialization
         window.addEventListener('DOMContentLoaded', () => {
+            loadCurrentUser();
             applyThemeIcon();
             startPSTClock();
             renderTable(database[activeTab]);

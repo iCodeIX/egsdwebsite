@@ -1420,7 +1420,7 @@
                 }
                 const codename = user.user_metadata?.codename;
                 document.getElementById('userEmailDisplay').textContent = codename
-                    ? `${codename} (${user.email})`
+                    ? `${codename}`
                     : user.email;
             } catch (e) {
                 window.location.href = "login.html";
